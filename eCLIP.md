@@ -51,10 +51,16 @@
 
 - **2% of sample：** 用于SMInput，即size-matched input control，是为了做对照去除一些类似系统误差的作用。 This  ‘size-matched  input  control’  (SMInput)  serves  as a  crucial  control  for  nonspecific background  signal  in  the  identical size range on the membrane as well as any inherent biases in ligations, RT–PCR, gel migration and transfer steps. 
 
+ENCODE Guidelines for eCLIP-seq Experiments文档中有一段关于SMInput的描述觉得更清晰些，如下图：
+
+![Size-matched input controls](images/5_SMInput.PNG)
+
 ---
 
 ### Analysis Pipeline
 实验部分就先看到这、写到这里，其实还是有疑问的，带着疑问后面会研究下分析的pipeline：[YeoLab-eCLIP](https://github.com/YeoLab/eclip)
+
+关于分析的方法、pipeline，又看了下文章中关于ONLINE METHODS这部分的介绍，其实描述的还算详细的，所以在考虑是不是从文章的Supplementary Protocol 2.中的code入手，觉得github上的应该还在开发中，复现的话估计原文中的比较好实现吧。
 
 
 
