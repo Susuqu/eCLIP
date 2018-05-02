@@ -10,8 +10,11 @@
 	- 在哪里可以找到RBP对应的数据：
 		- [RBP database](http://rbpdb.ccbr.utoronto.ca/)：但我看了一下最近一次的更新数据也是2012年了，估计没有人维护了。
 		- [ENCODE](https://www.encodeproject.org/eclip/)：推荐这个。
-- CLIP：crosslinking and immunoprecipitation，一种实验方法，用于鉴定RBP的结合位点。
+RNA ligase: RNA连接酶
+- CLIP：crosslinking and immunoprecipitation，一种实验方法，用于研究RBP与RNA分子之间的作用。
+- CLIP-seq：即紫外交联免疫沉淀结合高通量测序(crosslinking immunprecipitation and high-throughput sequencing)，是一项在全基因组水平揭示RNA分子与RNA结合蛋白相互作用的革命性技术。其主要原理是基于RNA分子与RNA结合蛋白在紫外照射下发生耦联，以RNA结合蛋白的特异性抗体将RNA-蛋白质复合体沉淀之后，回收其中的RNA片段，经添加接头、RT-PCR等步骤，对这些分子进行高通量测序，再经生物信息学的分析和处理、总结，挖掘出其特定规律，从而深入揭示RNA结合蛋白与RNA分子的调控作用及其对生命的意义。
 - eCLIP：enhanced CLIP ，一种相对于CLIP“升级的”实验方法，据说在鉴定RBP结合位点时有更好的效果。
+
 
 ---
 ## Robust transcriptome-wide discovery of RNA-binding protein binding sites with enhanced CLIP (eCLIP)
@@ -35,7 +38,7 @@
 ![2_experiment_flow](images/2_experiment_flow.png)
 
 ### 图解：
-- UV的方式使得RBP和RNA进行紧密结合；
+- UV的方式使得RBP和RNA进行耦联、紧密结合；
 - 裂解RNA片段；
 - 对于裂解后的样本，分成2份（**这里也是我最困惑的地方，为什么要把sample分成两份呢？而且两份后续的实验操作还不同——下面会解释**）：
 	- 2% of sample——for size-matched imput (SMInput)
@@ -57,12 +60,97 @@ ENCODE Guidelines for eCLIP-seq Experiments文档中有一段关于SMInput的描
 
 ---
 
-### Analysis Pipeline
+# Analysis Pipeline
 实验部分就先看到这、写到这里，其实还是有疑问的，带着疑问后面会研究下分析的pipeline：[YeoLab-eCLIP](https://github.com/YeoLab/eclip)
 
 关于分析的方法、pipeline，又看了下文章中关于ONLINE METHODS这部分的介绍，其实描述的还算详细的，所以在考虑是不是从文章的Supplementary Protocol 2.中的code入手，觉得github上的应该还在开发中，复现的话估计原文中的比较好实现吧。
 
+然而！！！特别坑的是今天发现文献中给的[Code availability路径](https://github.com/gpratt/gatk/releases/tag/2.3.2),，根本找不到对应的内容，八竿子打不着，所以只能用github上的内容了。
+
+## Common Workflow Language (CWL)
+因为整个eCLIP是基于Common Workflow Language (CWL)的，所以需要先了解一下这个语言:
+
+***Introduction from the website:*** The Common Workflow Language (CWL) is a specification for describing analysis workflows and tools in a way that makes them portable and scalable across a variety of software and hardware environments, from workstations to cluster, cloud, and high performance computing (HPC) environments. CWL is designed to meet the needs of data-intensive science, such as Bioinformatics, Medical Imaging, Astronomy, Physics, and Chemistry. 简单说就是一个通用工作流程语言，用于规范地描述分析工作流程和工具。
+
+- [CWL-GitHub](https://github.com/common-workflow-language/cwltool)
+- [CWL-user guide](https://www.commonwl.org/#Implementations)
+
+## eclip 0.2.1a release version
+目前GitHub上的eclip有3个release版本，我们server上目前是基于最新发布的0.2.1a版。我使用之前主管都把cwl、conda（其实我到现在还是不知道conda是啥）等这些安装好了，所以我只需要配置一下环境变量就可以用了。
+***ps: 其实蛮希望这些全部根据文档自己安装一遍，毕竟短板是在安装上，如果……有机会……试试***
+
+### 配置环境变量：
+
+	#eCLIP related environments (我把和他不一样的环境变量都加进来了，其实有些乱，有些也有可能不需要，后续再优化吧)
+	PATH=$PATH:/Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/cwl/
+	PATH=$PATH:/Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/wf
+	PATH=$PATH:/Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/bin/
+	PATH=$PATH:/Bioinfo/ScientificResearchService/bin/anaconda/anaconda3-5.1.0/envs/clip-seq/bin
+	PATH=$PATH:/Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/bin/eclipdemux/bin
+	PATH=$PATH:/Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/bin/makebigwigfiles/makebigwigfiles
+	PATH=/Bioinfo/ScientificResearchService/bin/anaconda/anaconda3-5.1.0/bin:$PATH
+	
+据主管说他把conda安在了/Bioinfo/ScientificResearchService/bin/anaconda/anaconda3-5.1.0/里，所以也得加上这个路径。
+	
+### 虚拟环境设置（？maybe 不够准确，后续update）
+cat init.sh
+
+	source activate clip-seq;
+	export PATH=${PWD}/bin/:$PATH;
+	export PATH=${PWD}/cwl/:$PATH;
+	# export PATH=${PWD}/members:$PATH;
+	export PATH=${PWD}/wf:$PATH;
+	# export PATH=${PWD}/members/bin/:$PATH;
+	# export PATH=${PWD}/metadata:$PATH;
+	### required by toil source ###
+	### use development branch of toil, latest stable has some bugs with torque resource alloc ###
+	cd ${PWD}/bin;
+	cd toil;
+	cd ../;
+	cd eclipdemux;
+	export PATH=$PATH:${PWD}/bin
+	cd ..;
+	cd gscripts;
+	cd ..;
+	cd clipper;
+	cd ..;
+	cd makebigwigfiles;
+	export PATH=$PATH:${PWD}/makebigwigfiles
+	cd ..;
+
+source init.sh
+
+### run an example
+.yaml文件是cwl程序的参数执行文件
+在虚拟环境中运行程序：
+
+	source activate clip-seq
+
+	$demux_pe.cwl /Bioinfo/ScientificResearchService/project/project3_eclip_20180314/bin/eclip-0.2.1a/tests/01_demux/demux.yaml
 
 
-***未完待续***
+
+***可是依然对整个流程充满了疑惑：***
+1.按照文章附件给的文档说明，merge的应该是两个技术重复：Merges the two technical replicates for further downstream analysis.但按照GitHub上的图所示又好像是一个sample的2个reads：
+
+![github_eCLIP-flowchart](./images/7_github_eCLIP-flowchart.png)
+
+2.以及，按照文章附件给的文档说明：To each sample, add 2.5 μl of each of two different barcoded RNA adapters to each sample.
+Acceptable RNA adapter pairs:
+ A01 + B06
+ C01 + D08
+ A03 + G07
+ A04 + F05
+ X1-A + X1-B
+ X2-A + X2-B
+还是上面那个图，如果最开始的read1和read2是指的一个sample的两条reads，那后面为什么要岔开交差处理呢？不懂。
+
+3.再看这个图：
+
+![Optional sample pooling strategy and eCLIP computational analysis workflow](./images/6_supplementaryFig2.jpg)
+
+(a) At the 3′ RNA adapter ligation step in eCLIP, the RNA adapter includes a barcode sequence, enabling pooling of multiple experiments before the protein gel electrophoresis step. Note that pooled samples must have identical desired cut size on the nitrocellulose membrane, and should have a similar number of RNA molecules (to avoid over- or under-sequencing of individual experiments within the pooled sample). (b) Schematic of eCLIP computational analysis pipeline. Squares indicate processing steps, with processing output used for downstream analyses indicated as filled green circles. Software packages used are indicated in bold.
+
+
+***整体感觉就是好多东西我和主管现在都在猜，但已经有了一些进展了，然后感慨了下Yeo真是牛人，啊哈哈哈……未完待续***
 
