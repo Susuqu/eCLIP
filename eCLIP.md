@@ -151,6 +151,7 @@ Acceptable RNA adapter pairs:
 
 (a) At the 3′ RNA adapter ligation step in eCLIP, the RNA adapter includes a barcode sequence, enabling pooling of multiple experiments before the protein gel electrophoresis step. Note that pooled samples must have identical desired cut size on the nitrocellulose membrane, and should have a similar number of RNA molecules (to avoid over- or under-sequencing of individual experiments within the pooled sample). (b) Schematic of eCLIP computational analysis pipeline. Squares indicate processing steps, with processing output used for downstream analyses indicated as filled green circles. Software packages used are indicated in bold.
 
+Supplementary Protocol 2里提供了Yeo Lab Custom Script Versions，随便点进去看了一个就找到了[原文当年分析用的全部代码的链接](https://github.com/YeoLab/gscripts/releases)，这个不是基于CWL的，估计重复起来更容易。
 
 ***整体感觉就是好多东西我和主管现在都在猜，但已经有了一些进展了，然后感慨了下Yeo真是牛人，啊哈哈哈……未完待续***
 
