@@ -1,23 +1,31 @@
 # eCLIP
-## Study notes on eCLIP pipeline by QuSusu
+## Summary on eCLIP pipeline by QuSusu
+
+Update at 2018/05/17
+
 ---
-应该会持续性地对eCLIP的内容补充，今天主要写一篇文献的summary。其实我对RNA相关的东西了解超级少，硬着头皮看了这个文献，理解的还不够深入，先写下自己目前的理解。
+- 会持续性地对eCLIP的内容补充，目前主要写一篇文献的summary介绍一些背景知识，以及对pipeline目前的掌握情况。
+ps：其实我对RNA相关的东西了解超级少，硬着头皮看了这个文献，理解的还不够深入，先写下自己目前的理解。
 ## 先给自己科普下简单的知识、名词：
 - 转录调控：蛋白质对DNA
 - 转录后调控：蛋白质对RNA
-- 转录水平的实验相对容易做，转录后的研究对实验技术要求高。
-- RNA-binding protein，RBP：有一类RNA结合蛋白（简称RBP），它们会结合RNA，调控RNA加工。
+- 转录水平的实验相对容易做，_**转录后的研究对实验技术要求高**_。
+- RNA-binding proteins，RBPs：RNA结合蛋白（简称RBPs），RBPs能与RNA分子相互作用，是一类伴随RNA的调控代谢过程，与RNA结合的蛋白质的总称。RBP伴随RNA生命始终，可以不夸张的说：没有RBP，RNA寸步难行。其主要作用是介导RNA的成熟、转运、定位和翻译；一个RBP可能存在多种靶标RNA；且其表达缺陷会造成多种疾病。
 	- 在哪里可以找到RBP对应的数据：
 		- [RBP database](http://rbpdb.ccbr.utoronto.ca/)：但我看了一下最近一次的更新数据也是2012年了，估计没有人维护了。
 		- [ENCODE](https://www.encodeproject.org/eclip/)：推荐这个。
-RNA ligase: RNA连接酶
-- CLIP：crosslinking and immunoprecipitation，一种实验方法，用于研究RBP与RNA分子之间的作用。
-- CLIP-seq：即紫外交联免疫沉淀结合高通量测序(crosslinking immunprecipitation and high-throughput sequencing)，是一项在全基因组水平揭示RNA分子与RNA结合蛋白相互作用的革命性技术。其主要原理是基于RNA分子与RNA结合蛋白在紫外照射下发生耦联，以RNA结合蛋白的特异性抗体将RNA-蛋白质复合体沉淀之后，回收其中的RNA片段，经添加接头、RT-PCR等步骤，对这些分子进行高通量测序，再经生物信息学的分析和处理、总结，挖掘出其特定规律，从而深入揭示RNA结合蛋白与RNA分子的调控作用及其对生命的意义。
-- eCLIP：enhanced CLIP ，一种相对于CLIP“升级的”实验方法，据说在鉴定RBP结合位点时有更好的效果。
 
+- RNA ligase: RNA连接酶
+
+- CLIP：crosslinking and immunoprecipitation，核糖核苷交联和免疫共沉淀，一种常用的用于研究RBP与RNA分子之间的作用的实验方法。
+- CLIP-seq：即紫外交联免疫沉淀结合高通量测序(crosslinking immunprecipitation and high-throughput sequencing)，是一项在全基因组水平揭示RNA分子与RNA结合蛋白相互作用的革命性技术。其主要原理是基于RNA分子与RNA结合蛋白在紫外照射下发生耦联，以RNA结合蛋白的特异性抗体将RNA-蛋白质复合体沉淀之后，回收其中的RNA片段，经添加接头、RT-PCR等步骤，对这些分子进行高通量测序，再经生物信息学的分析和处理、总结，挖掘出其特定规律，从而深入揭示RNA结合蛋白与RNA分子的调控作用及其对生命的意义。
+- eCLIP：enhanced CLIP ，一种相对于CLIP“升级的”方法，据说在鉴定RBP结合位点时有更好的效果。
 
 ---
 ## Robust transcriptome-wide discovery of RNA-binding protein binding sites with enhanced CLIP (eCLIP)
+
+![文章发表在Nature Method上](images/paper.png)
+
 
 	The eCLIP method and processing pipeline were developed by the laboratory of Gene Yeo at the University of California, San Diego.据说这个Gene Yeo是个学术方面超厉害的人~
 ### Why eCLIP occurs?
