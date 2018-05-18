@@ -1,10 +1,12 @@
 # eCLIP
 ## Summary on eCLIP pipeline by QuSusu
 
-Update at 2018/05/17
+Update at 2018/05/18
 
 ---
 - 会持续性地对eCLIP的内容补充，目前主要写一篇文献的summary介绍一些背景知识，以及对pipeline目前的掌握情况。
+- 除此md文件外，因汇报需要也制作了相应的introduction PPT。
+
 ps：其实我对RNA相关的东西了解超级少，硬着头皮看了这个文献，理解的还不够深入，先写下自己目前的理解。
 ## 先给自己科普下简单的知识、名词：
 - 转录调控：蛋白质对DNA
@@ -16,10 +18,20 @@ ps：其实我对RNA相关的东西了解超级少，硬着头皮看了这个文
 		- [ENCODE](https://www.encodeproject.org/eclip/)：推荐这个。
 
 - RNA ligase: RNA连接酶
-
-- CLIP：crosslinking and immunoprecipitation，核糖核苷交联和免疫共沉淀，一种常用的用于研究RBP与RNA分子之间的作用的实验方法。
-- CLIP-seq：即紫外交联免疫沉淀结合高通量测序(crosslinking immunprecipitation and high-throughput sequencing)，是一项在全基因组水平揭示RNA分子与RNA结合蛋白相互作用的革命性技术。其主要原理是基于RNA分子与RNA结合蛋白在紫外照射下发生耦联，以RNA结合蛋白的特异性抗体将RNA-蛋白质复合体沉淀之后，回收其中的RNA片段，经添加接头、RT-PCR等步骤，对这些分子进行高通量测序，再经生物信息学的分析和处理、总结，挖掘出其特定规律，从而深入揭示RNA结合蛋白与RNA分子的调控作用及其对生命的意义。
+### 研究RBPs与RNA之间的interaction的常用方法：RIP-Chip, RIP-seq, CLIP-seq（包括了多种改良后的CLIP方法）
+- 一般的过程都为（无论哪种方法）：结合RBPs的RNAs被分离，然后逆转录，以及做cDNA的测序。
+- RIP: RNAs associated with immune purified RBPs
+- CLIP：crosslinking and immunoprecipitation，核糖核苷交联和免疫共沉淀。
+_**（RIP-Seq和CLIP-Seq的区别在于，RIP不进行紫外交联，直接进行后续的免疫共沉淀。）**_
+- PAR-CLIP:  Photoactivatable-ribonucleoside-enhanced crosslinking and immunoprecipitation，光激活-核糖核苷增强的交联和免疫沉淀。
+- iCLIP: individual-nucleotide-resolution。
+- CLIP-seq：即紫外交联免疫沉淀结合高通量测序(crosslinking immunprecipitation and high-throughput sequencing)。
+	- 是一项在全基因组水平揭示RNA分子与RNA结合蛋白相互作用的革命性技术。其主要原理是基于RNA分子与RNA结合蛋白在紫外照射下发生耦联，以RNA结合蛋白的特异性抗体将RNA-蛋白质复合体沉淀之后，回收其中的RNA片段，经添加接头、RT-PCR等步骤，对这些分子进行高通量测序，再经生物信息学的分析和处理、总结，挖掘出其特定规律，从而深入揭示RNA结合蛋白与RNA分子的调控作用及其对生命的意义。
 - eCLIP：enhanced CLIP ，一种相对于CLIP“升级的”方法，据说在鉴定RBP结合位点时有更好的效果。
+	- 技术优势：
+		- 准确性高： 从活细胞交联开始，反应了体内环境下真实的分子间相互作用。
+		- 特异性强： 紫外辐射不会造成蛋白和蛋白之间的交联，只会鉴定出蛋白和 RNA 之间的相互作用。
+		- 应用范围广： 特别适用于研究剪接因子RNA结合图谱、miRNA作用靶点等研究。
 
 ---
 ## Robust transcriptome-wide discovery of RNA-binding protein binding sites with enhanced CLIP (eCLIP)
@@ -160,6 +172,11 @@ Acceptable RNA adapter pairs:
 (a) At the 3′ RNA adapter ligation step in eCLIP, the RNA adapter includes a barcode sequence, enabling pooling of multiple experiments before the protein gel electrophoresis step. Note that pooled samples must have identical desired cut size on the nitrocellulose membrane, and should have a similar number of RNA molecules (to avoid over- or under-sequencing of individual experiments within the pooled sample). (b) Schematic of eCLIP computational analysis pipeline. Squares indicate processing steps, with processing output used for downstream analyses indicated as filled green circles. Software packages used are indicated in bold.
 
 Supplementary Protocol 2里提供了Yeo Lab Custom Script Versions，随便点进去看了一个就找到了[原文当年分析用的全部代码的链接](https://github.com/YeoLab/gscripts/releases)，这个不是基于CWL的，估计重复起来更容易。
+
+---
+## 现在有哪个公司可以做CLIP-seq的分析？
+目前在网上只搜索到广州的[锐博](http://www.ribobio.com/)，一家比较专注做RNA检测的公司！
+
 
 ***整体感觉就是好多东西我和主管现在都在猜，但已经有了一些进展了，然后感慨了下Yeo真是牛人，啊哈哈哈……未完待续***
 
